@@ -113,4 +113,5 @@ Training data was chosen to keep the vehicle driving on the road. I used a combi
 
 Rather than directly use the given training set, I did a lot of prepocessing to it. Besides images of the center camera, I utilized images from both left and right camera with an additional steering angle attached. I jittered the images in several ways to simulate different driving conditions. The detailed method and be found in train.py.
 
+Eventually, the model can drive the car in lane on track 1 for hours and drive the car quite smoothly on track 2 as well.
 
