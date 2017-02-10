@@ -15,17 +15,6 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-
-[//]: # (Image References)
-
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
@@ -48,82 +37,80 @@ python drive.py model.h5
 
 ####3. Submssion code is usable and readable
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+The model.py file contains the code for training and saving the convolution neural network. The file shows how I preprocess the data and describes the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
 ###Model Architecture and Training Strategy
 
 ####1. An appropriate model arcthiecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+I have tried several different structures. Some randomly chosed structure I tried predicts nearly constant steering angle. I think it may be because of the structure is not deep enough. It turns out that the Nvidia structure works for me. The difference is I used 64*64*3 input size rather than 66*200*3 used in the Nvidia paper. So as conciqunence, the number of parameters in each leayer are different. 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+So my model has 9 layers including the output layer, 5 convolutional layers and 4 fully connected layers. Each leayer and its following activation are showed below:
+
+Input layer: 64*64*3 image from the center camera
+Layer 1: 2Dconvolutional, kernal = (5,5), stride = (2,2), 24 filters
+ReLU activation
+feature size = 30*30*24
+Layer 2: 2Dconvolutional, kernal = (5,5), stride = (2,2), 36 filters, output size = 13*13*36
+ReLU activation
+feature size = 13*13*36
+Layer 3: 2Dconvolutional, kernal = (5,5), stride = (2,2), 48 filters, output size = 5*5*48
+ReLU activation
+feature size = 5*5*48
+Layer 4: 2Dconvolutional, kernal = (3,3), stride = (1,1), 64 filters, output size = 3*3*64
+ReLU activation
+feature size = 3*3*64
+Layer 5: 2Dconvolutional, kernal = (3,3), stride = (1,1), 96 filters, output size = 1*1*96
+ReLU activation
+feature size = 1*1*96
+Layer 6: Fully connected layer, output = 100
+ReLU activation
+feature size = 100,
+Layer 6: Fully connected layer, output = 50
+ReLU activation
+feature size = 50,
+Layer 6: Fully connected layer, output = 10
+ReLU activation
+feature size = 10,
+Layer 6: Fully connected layer/output layer, output = 1
+Linear activation
+output = steering angle
 
 ####2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+I have tried to add dropouts and BatchNormalization into each hidden layer to prevent overfitting.
+I have tried to add dropouts only, BatchNormalization only and both dropouts and BatchNormalization. But unfortunately none of those trials looks good to me.. After indroducing dropouts and BatchNormalization, it takes more time to train the model and the trained models cann't drive the car well in the simulator. 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+So eventally I decided to not use dropouts or BatchNormalization, instead, to prevent overfitting I used early termination in my model training. So I only trained the model for 1 epoch with verbose = 1. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track. The result is: the model can drive the car in lane on track 1 for hours and drive the car quite smoothly on track 2 also.
 
 ####3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually.
+As described in the above block, I trained the model for only 1 epoch to prevent overfitting.
+I used keras fit_generator to generate training batches while training instead of storing all training samples in memory.
+for training samples per epoch I have tried different values and there is not much difference whether it is 20000 or 30000 as long as it is reasonably large. I chose 30000 samples per epoch.
+Since my machine has enough memory, I chose batch size to be 1024 to sort of increase the converging rate.
+
 
 ####4. Appropriate training data
 
+First of all, I only used the training data set given by Udacity and there are a couple of reasons why I did that:
+
+1. It was super hard for me to collect quality data using the provided simulator.
+
+The stable simulator used keyboard to control the steering angle. In this way, I have to quickly click and release to steer and the values of steering angle are just kind of impluses -- in one frame the steering angle is 0 and the next similar frame there could be a large steering angle. I wouldn't call this quality training data. In addtion, I event couldn't keep the car in lane using this control.
+
+The beta simulator enables mouse input. But I don't know why they make the steering angle based on the strenth of mouse moving rather than the mouse distance (by the time I downloaded the simulator). This is a super bad idea and I totally cannot control it.
+
+I found some people in Slack recommended using joysticks for data collection in this project. Sorry I don't have one.
+
+2. The provided training set look OK.
+
+Someone reconstruct the data collection video based the images provided by Udacity. Based on the video it looks the car was driving OK, at least better than me. Also people on slack confirmed that it is totally possible to finish this project by just using the provided data set, so I decided to use the given data set to train my model.
+
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
 
-For details about how I created the training data, see the next section. 
 
-###Model Architecture and Training Strategy
-
-####1. Solution Design Approach
-
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
-
-####3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+Rather than directly use the given training set, I did a lot of prepocessing to it. Besides images of the center camera, I utilized images from both left and right camera with an additional steering angle attached. I jittered the images in several ways to simulate different driving conditions. The detailed method and be found in train.py.
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
