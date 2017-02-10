@@ -96,7 +96,7 @@ Since my machine has enough memory, I chose batch size to be 1024 to sort of inc
 
 First of all, I only used the training data set given by Udacity and there are a couple of reasons why I did that:
 
-1. It was super hard for me to collect quality data using the provided simulator.
+  1. It was super hard for me to collect quality data using the provided simulator.
 
 The stable simulator used keyboard to control the steering angle. In this way, I have to quickly click and release to steer and the values of steering angle are just kind of impluses -- in one frame the steering angle is 0 and the next similar frame there could be a large steering angle. I wouldn't call this quality training data. In addtion, I event couldn't keep the car in lane using this control.
 
@@ -104,7 +104,7 @@ The beta simulator enables mouse input. But I don't know why they make the steer
 
 I found some people in Slack recommended using joysticks for data collection in this project. Sorry I don't have one.
 
-2. The provided training set look OK.
+  2. The provided training set look OK.
 
 Someone reconstruct the data collection video based the images provided by Udacity. Based on the video it looks the car was driving OK, at least better than me. Also people on slack confirmed that it is totally possible to finish this project by just using the provided data set, so I decided to use the given data set to train my model.
 
