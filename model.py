@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import math
 import cv2
+from sklearn.utils import shuffle
 
 # I put the given training data in data_given folder
 datapath = 'data_given/'
@@ -105,6 +106,7 @@ def generate_train_from_PD_batch(data,batch_size = 32):
     batch_images = np.zeros((batch_size, new_size_row, new_size_col, 3))
     batch_steering = np.zeros(batch_size)
     while 1:
+        data = shuffle(data)
         for i_batch in range(batch_size):
             i_line = np.random.randint(len(data))
             line_data = data.iloc[[i_line]].reset_index()
@@ -146,8 +148,8 @@ model = Sequential()
 #0 columns of pixels from the left of the image
 #0 columns of pixels from the right of the image
 #model.add(Lambda(lambda x: cv2.resize(x,(64,64),interpolation=cv2.INTER_AREA)))
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
-model.add(Convolution2D(24, 5, 5,input_shape=(64, 64, 3),subsample = (2,2)))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(64,64,3)))
+model.add(Convolution2D(24, 5, 5,subsample = (2,2)))
 model.add(ELU())
 #model.add(Activation('relu'))
 # (none, 30, 30, 24)
@@ -199,3 +201,6 @@ for i_pr in range(8):
 # save model
 from keras.models import load_model
 model.save('model_test.h5')
+
+from keras.utils.visualize_util import plot
+plot(model, to_file='model_test.png')

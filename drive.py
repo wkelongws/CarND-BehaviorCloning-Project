@@ -67,7 +67,7 @@ def preprocessImage(image):
     # note: numpy arrays are (row, col)!
     image = image[math.floor(shape[0]/5):shape[0]-25, 0:shape[1]]
     image = cv2.resize(image,(new_size_col,new_size_row),interpolation=cv2.INTER_AREA)
-    image = image/255.-.5
+    #image = image/255.-.5
     return image
 
 
