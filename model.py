@@ -126,37 +126,57 @@ def generate_train_from_PD_batch(data,batch_size = 32):
             batch_images[i_batch] = x
             batch_steering[i_batch] = y
         yield batch_images, batch_steering
-    return batch_images, batch_steering
+#return batch_images, batch_steering
 
 # construct model
 from keras.models import Sequential
-from keras.layers import Dense, Convolution2D, Flatten, Input, Dropout, MaxPooling2D, Activation
+from keras.layers import Dense, Convolution2D, Flatten, Input, Dropout, MaxPooling2D, Activation, Cropping2D, Lambda
 from keras.models import model_from_json
 from keras.activations import relu, softmax
+from keras.layers.advanced_activations import ELU
 
 model = Sequential()
+
+#model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
+
+#cv2.resize(image,(new_size_col,new_size_row),interpolation=cv2.INTER_AREA)
+#The example above crops:
+#50 rows pixels from the top of the image
+#20 rows pixels from the bottom of the image
+#0 columns of pixels from the left of the image
+#0 columns of pixels from the right of the image
+#model.add(Lambda(lambda x: cv2.resize(x,(64,64),interpolation=cv2.INTER_AREA)))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
 model.add(Convolution2D(24, 5, 5,input_shape=(64, 64, 3),subsample = (2,2)))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 # (none, 30, 30, 24)
 model.add(Convolution2D(36, 5, 5,subsample = (2,2)))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 # (none, 13, 13, 36)
 model.add(Convolution2D(48, 5, 5,subsample = (2,2)))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 # (none, 5, 5, 48)
 model.add(Convolution2D(64, 3, 3,subsample = (1,1)))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 # (none, 3, 3, 64)
 model.add(Convolution2D(96, 3, 3,subsample = (1,1)))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 # (none, 1, 1, 96)
 model.add(Flatten())
 model.add(Dense(100))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 model.add(Dense(50))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 model.add(Dense(10))
-model.add(Activation('relu'))
+model.add(ELU())
+#model.add(Activation('relu'))
 model.add(Dense(1))
 model.add(Activation('linear'))
 # Compile model
@@ -178,4 +198,4 @@ for i_pr in range(8):
 
 # save model
 from keras.models import load_model
-model.save('model.h5')
+model.save('model_test.h5')
