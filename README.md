@@ -15,6 +15,16 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
+[//]: # (Image References)
+
+[image1]: ./bright_jitter.png "brightjitter"
+[image2]: ./locationjitter.png "locationjitter"
+[image3]: ./shadowjitter.png "shadowjitter"
+[image4]: ./left_center_right.png "leftright"
+[image5]: ./trainingsample.png "trainingsample"
+[image6]: ./model.png "model"
+
+
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
@@ -112,6 +122,26 @@ Training data was chosen to keep the vehicle driving on the road. I used a combi
 
 
 Rather than directly use the given training set, I did a lot of prepocessing to it. Besides images of the center camera, I utilized images from both left and right camera with an additional steering angle attached. I jittered the images in several ways to simulate different driving conditions. The detailed method and be found in train.py.
+Some images are shown here to demonstrate the preprocessing:
+
+  1). brightness jitter: randomly change the brightness of the image
+  ![alt text][image1]
+  
+  2). location jitter: Shift the camera images horizontally to simulate the effect of car being at different positions on the road. Also shift the images vertically by a random number to simulate the effect of driving up or down the slope. When shifting horizontally, assign 0.004 steering angle per pixel shift. This is a empirically selected value inspired also by people in Slack. When shifting verically, no additional steering angle will be assigned.
+  ![alt text][image2]
+  
+  3). shadow jitter: random shadows are cast across the image by choosing one random point on the top edge and one random point on the bottom edge of the image, connecting the two random selected points and shading all points on a random side of the image.
+
+  ![alt text][image3]
+  
+  4). assigning additional steering angles to images from left and right camera: a 0.25 extra steering angle was assigned to images from left and right camera:
+  ![alt text][image4]
+
+And combining all these preprocessings, here are some excamples of the preprocessed images which are actually sent to the model to learn:
+
+![alt text][image5]
 
 Eventually, the model can drive the car in lane on track 1 for hours and drive the car quite smoothly on track 2 as well.
 
+here is a visualization of the model structure:
+![alt text][image6]
