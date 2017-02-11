@@ -144,4 +144,21 @@ And combining all these preprocessings, here are some excamples of the preproces
 Eventually, the model can drive the car in lane on track 1 for hours and drive the car quite smoothly on track 2 as well.
 
 here is a visualization of the model structure:
-![alt text][image6]
+
+  ![alt text][image6]
+  
+  
+#### Here summarizes how I addressed the review comments from the first submission:
+
+1. I have modfied the README.md file adding supporting images to describe how I preprocessed the data.
+2. I have added a visualization of my model struture at the end. I used: 
+
+  from keras.models import load_model
+  from keras.utils.visualize_util import plot
+  model = load_model('model.h5')
+  plot(model, to_file='model.png')"
+  
+  to create the structure image which however doesn't look quite nice... So could you please point me a better way to visualize the model? I will appreciate.
+
+3. I have used the keras Lambda layer in my model to perform the data normalization. Truely this is a very convenient way。
+4. I have tried the suggested ELU activation in my model. I have read the artical and thank you for providing me this information. Change to ELU made my model behave a little bit different than before, so to tune the model with ELU activation I may need to spend some other efforts play with other hyperparameter. Since the my model in the first submission already passed the performance check so I still put the same model here in the second submission. 
