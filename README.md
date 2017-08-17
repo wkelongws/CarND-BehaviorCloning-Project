@@ -15,6 +15,8 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
+The video of a sample autonomous run can be found [here](https://youtu.be/1Ju_tzxLD6k).
+
 [//]: # (Image References)
 
 [image1]: ./bright_jitter.png "brightjitter"
@@ -162,3 +164,5 @@ here is a visualization of the model structure:
 
 3. I have used the keras Lambda layer in my model to perform the data normalization. Truely this is a very convenient way。
 4. I have tried the suggested ELU activation in my model. I have read the artical and thank you for providing me this information. Change to ELU made my model behave a little bit different than before, so to tune the model with ELU activation I may need to spend some other efforts play with other hyperparameter. Since the my model in the first submission already passed the performance check so I still put the same model here in the second submission. 
+
+The video of a sample autonomous run can be found [here](https://youtu.be/1Ju_tzxLD6k).
