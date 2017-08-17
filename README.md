@@ -1,8 +1,8 @@
-#**Behavioral Cloning** 
+# **Behavioral Cloning** 
 
-##Udacity Self-driving-Car Nano-degree Term1 Porject 3 
+## Udacity Self-driving-Car Nano-degree Term1 Porject 3 
 
-###Train a car to drive autonomously in a driving simulator
+### Train a car to drive autonomously in a driving simulator
 
 ---
 
@@ -26,12 +26,12 @@ The goals / steps of this project are the following:
 
 
 ## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
 ---
-###Files Submitted & Code Quality
+### Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
 * model.py containing the script to create and train the model
@@ -39,19 +39,19 @@ My project includes the following files:
 * model.h5 containing a trained convolution neural network 
 * README.md summarizing the results
 
-####2. Submssion includes functional code
+#### 2. Submssion includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-####3. Submssion code is usable and readable
+#### 3. Submssion code is usable and readable
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows how I preprocess the data and describes the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. An appropriate model arcthiecture has been employed
+#### 1. An appropriate model arcthiecture has been employed
 
 I have tried several different structures. Some randomly chosed structure I tried predicts nearly constant steering angle. I think it may be because of the structure is not deep enough. It turns out that the Nvidia structure works for me. The difference is I used 64*64*3 input size rather than 66*200*3 used in the Nvidia paper. So as conciqunence, the number of parameters in each leayer are different. 
 
@@ -86,14 +86,14 @@ Layer 6: Fully connected layer/output layer, output = 1
 Linear activation
 output = steering angle
 
-####2. Attempts to reduce overfitting in the model
+#### 2. Attempts to reduce overfitting in the model
 
 I have tried to add dropouts and BatchNormalization into each hidden layer to prevent overfitting.
 I have tried to add dropouts only, BatchNormalization only and both dropouts and BatchNormalization. But unfortunately none of those trials looks good to me.. After indroducing dropouts and BatchNormalization, it takes more time to train the model and the trained models cann't drive the car well in the simulator. 
 
 So eventally I decided to not use dropouts or BatchNormalization, instead, to prevent overfitting I used early termination in my model training. So I only trained the model for 1 epoch with verbose = 1. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track. The result is: the model can drive the car in lane on track 1 for hours and drive the car quite smoothly on track 2 also.
 
-####3. Model parameter tuning
+#### 3. Model parameter tuning
 
 The model used an adam optimizer, so the learning rate was not tuned manually.
 As described in the above block, I trained the model for only 1 epoch to prevent overfitting.
@@ -102,7 +102,7 @@ for training samples per epoch I have tried different values and there is not mu
 Since my machine has enough memory, I chose batch size to be 1024 to sort of increase the converging rate.
 
 
-####4. Appropriate training data
+#### 4. Appropriate training data
 
 First of all, I only used the training data set given by Udacity and there are a couple of reasons why I did that:
 
